@@ -25,9 +25,9 @@ custom_fonts/font = SubResource( 2 )
 wait_time = 0.1
 autostart = true
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="Floor" type="StaticBody2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
 position = Vector2( 512, 600 )
 scale = Vector2( 51, 2 )
 shape = SubResource( 1 )
