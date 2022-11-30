@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Assets/ARCADE_N.TTF" type="DynamicFontData" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/ParallaxBackground.gd" type="Script" id=4]
+[ext_resource path="res://Assets/bulut.png" type="Texture" id=5]
+[ext_resource path="res://Assets/background.png" type="Texture" id=6]
+[ext_resource path="res://Assets/ground.png" type="Texture" id=7]
+[ext_resource path="res://tree.tscn" type="PackedScene" id=8]
 
 [sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 2 )
@@ -25,15 +30,64 @@ custom_fonts/font = SubResource( 2 )
 wait_time = 0.1
 autostart = true
 
-[node name="Floor" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2( 512, 600 )
 scale = Vector2( 51, 2 )
 shape = SubResource( 1 )
 
 [node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( 73, 564 )
+position = Vector2( 68, 582 )
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource( 4 )
+playing = true
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground"]
+position = Vector2( 961, 542 )
+texture = ExtResource( 6 )
+
+[node name="Clouds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1024, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Clouds"]
+position = Vector2( 218.411, 54.6397 )
+scale = Vector2( 2.19918, 1.59559 )
+texture = ExtResource( 5 )
+region_enabled = true
+region_rect = Rect2( 193.264, 4.71844, 26.2222, 18.6667 )
+
+[node name="Sprite2" type="Sprite" parent="ParallaxBackground/Clouds"]
+position = Vector2( 420.75, 27.25 )
+scale = Vector2( 2.33871, 1.76316 )
+texture = ExtResource( 5 )
+region_enabled = true
+region_rect = Rect2( 130.268, 3.23548, 31.3828, 19.7355 )
+
+[node name="Sprite3" type="Sprite" parent="ParallaxBackground/Clouds"]
+position = Vector2( 615.5, 71.5 )
+scale = Vector2( 2.19231, 1.5625 )
+texture = ExtResource( 5 )
+region_enabled = true
+region_rect = Rect2( 163.056, 6.34065, 26.5079, 16.9243 )
+
+[node name="Sprite4" type="Sprite" parent="ParallaxBackground/Clouds"]
+position = Vector2( 832.5, 74.25 )
+scale = Vector2( 1.96875, 1.425 )
+texture = ExtResource( 5 )
+region_enabled = true
+region_rect = Rect2( 191.797, 4.16254, 32.4344, 20.1094 )
+
+[node name="Floor" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1200, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Floor"]
+position = Vector2( 964, 67 )
+scale = Vector2( 1.00208, 1.00093 )
+texture = ExtResource( 7 )
+
+[node name="tree" parent="." instance=ExtResource( 8 )]
 
 [connection signal="timeout" from="ObstacleTimer" to="." method="_on_ObstacleTimer_timeout"]
 [connection signal="timeout" from="Label/ScoreTimer" to="." method="_on_ScoreTimer_timeout"]

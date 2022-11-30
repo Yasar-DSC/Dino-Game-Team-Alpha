@@ -3,7 +3,7 @@ extends Node2D
 export(PackedScene) var obstacle
 var score = 0
 var start = false
-
+var tree
 func _on_ScoreTimer_timeout():
 	score += 1
 
