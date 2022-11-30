@@ -9,3 +9,4 @@ func _process(delta):
 	if playing:
 		$Clouds.motion_offset += Vector2.LEFT * cloud_speed * delta
 		$Floor.motion_offset += Vector2.LEFT * floor_speed * delta
+
