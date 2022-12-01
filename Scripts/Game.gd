@@ -1,41 +1,54 @@
 extends Node2D
 
-export(PackedScene) var obstacle
+var obstacle1 = preload("res://Scenes/Obstacle_1.tscn")
+var obstacle2 = preload("res://Scenes/Obstacle_2.tscn")
+var obstacle3 = preload("res://Scenes/Obstacle_3.tscn")
 var score = 0
 var start = false
-
+var tree
 func _on_ScoreTimer_timeout():
 	score += 1
 
 func _physics_process(delta):
-	$Label.text = "SCORE:" + str(score)
-	if Input.is_action_just_pressed("ui_accept"): # Sadece deneme amaçlı 
-		restart()
-#	if !start:
-#		if Input.is_action_just_pressed("ui_up"):
-#			start = true
-#			$Player.start = true
-#			$ParallaxBackground.playing = true
-#			$Timer.start()
+	$Score.text = "SCORE:" + str(score)
+	if !start and score > 1:
+		if Input.is_action_just_pressed("ui_select"):
+			restart()
+	if !start and score < 1:
+		if Input.is_action_just_pressed("ui_up"):
+			start = true
+			$Player.start = true
+			
+#			$ParallaxBackground.playing = true # ParallaxBackground yaparken aç 
+
+			$Score/ScoreTimer.start()
+			$ObstacleTimer.start()
 
 func _on_ObstacleTimer_timeout():
-	pass
-#	spawn_obstacle()
+	spawn_obstacles()
+
+func spawn_obstacles():
+	var obstacles = [obstacle1, obstacle2, obstacle3]
+	var select = obstacles[randi()% obstacles.size()]
+	var new_obstacle = select.instance()
+	new_obstacle.position = $EnemySpawnPoint.global_position
+	new_obstacle.start = true
+	new_obstacle.connect("body_entered", self, "game_over")
+	add_child(new_obstacle)
+
+func game_over(body):
+	var obstacles = get_tree().get_nodes_in_group("obstacle")
+	start = false
+	$Player.start = false
+	$Player.velocity = Vector2.ZERO
+	$GameOver.text = "TRY AGAIN"
+	$GameOver2.text = "Press space to restart"
+#	$ParallaxBackground.playing = false # ParallaxBackground yaparken aç 
+	
+	$Score/ScoreTimer.stop()
+	$ObstacleTimer.stop()
+	for obstacle in obstacles:
+		obstacle.start = false
 
 func restart():
 	get_tree().reload_current_scene()
-	
-#func spawn_obstacle():
-#	var new_obstacle = obstacle_scene.instance()
-#	Obstacle.position = Vector2(1046, 562)
-#	Obstacle.start = true
-#	Obstacle.connect("body_entered", self, "game_over")
-#	add_child(Obstacle)
-
-#func game_over(body):
-#	var obstacles = get_tree().get_nodes_in_group("obstacle")
-#	$Player.start = false
-#	$ParallaxBackground.playing = false
-#	$Timer.stop()
-#	for obstacle in obstacles:
-#		obstacle.start = false
