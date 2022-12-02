@@ -5,9 +5,9 @@ var obstacle2 = preload("res://Scenes/Obstacle_2.tscn")
 var obstacle3 = preload("res://Scenes/Obstacle_3.tscn")
 var score = 0
 var start = false
-var tree
-func _on_ScoreTimer_timeout():
-	score += 1
+
+func _ready():
+	randomize()
 
 func _physics_process(delta):
 	$Score.text = "SCORE:" + str(score)
@@ -18,11 +18,12 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("ui_up"):
 			start = true
 			$Player.start = true
-			
-#			$ParallaxBackground.playing = true # ParallaxBackground yaparken aç 
-
+			$ParallaxBackground.playing = true 
 			$Score/ScoreTimer.start()
 			$ObstacleTimer.start()
+
+func _on_ScoreTimer_timeout():
+	score += 1
 
 func _on_ObstacleTimer_timeout():
 	spawn_obstacles()
@@ -43,8 +44,7 @@ func game_over(body):
 	$Player.velocity = Vector2.ZERO
 	$GameOver.text = "TRY AGAIN"
 	$GameOver2.text = "Press space to restart"
-#	$ParallaxBackground.playing = false # ParallaxBackground yaparken aç 
-	
+	$ParallaxBackground.playing = false
 	$Score/ScoreTimer.stop()
 	$ObstacleTimer.stop()
 	for obstacle in obstacles:

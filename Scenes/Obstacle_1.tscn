@@ -1,28 +1,30 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/Obstacle_1.gd" type="Script" id=1]
-[ext_resource path="res://Assets/cactus.png" type="Texture" id=2]
+[ext_resource path="res://Assets/engel.png" type="Texture" id=2]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 5.6, 4.375 )
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 4.4
+height = 0.2
 
 [node name="Obstacle_1" type="Area2D" groups=["obstacle"]]
 script = ExtResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
-scale = Vector2( 5, 5 )
+position = Vector2( -1.69407e-21, -35.625 )
+scale = Vector2( 2.5, 2.4569 )
 texture = ExtResource( 2 )
 region_enabled = true
-region_rect = Rect2( 5, 18, 11, 14 )
+region_rect = Rect2( 37, 3, 18, 29 )
 
 [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
 visible = false
-position = Vector2( 1.49012e-06, -0.5 )
-scale = Vector2( 2.8, 3.5 )
+position = Vector2( 2.38419e-07, -36 )
+scale = Vector2( 2.3, 3.6 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
-position = Vector2( 0, -0.5 )
+position = Vector2( 0, -36 )
 scale = Vector2( 5, 8 )
 shape = SubResource( 1 )
 

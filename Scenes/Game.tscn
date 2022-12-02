@@ -1,17 +1,44 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Assets/ARCADE_N.TTF" type="DynamicFontData" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Assets/ground.png" type="Texture" id=4]
-[ext_resource path="res://Assets/background.png" type="Texture" id=5]
+[ext_resource path="res://Assets/zemin.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Bahtsız Bedevi.png" type="Texture" id=5]
 [ext_resource path="res://Assets/bulut.png" type="Texture" id=6]
+[ext_resource path="res://Assets/sun.png" type="Texture" id=7]
+[ext_resource path="res://Scripts/ParallaxBackground.gd" type="Script" id=8]
+
+[sub_resource type="Shader" id=4]
+code = "shader_type canvas_item;
+
+uniform vec4 first_color : hint_color = vec4(1.0);
+uniform vec4 second_color : hint_color = vec4(0.0, 0.0, 0.0, 1.0);
+uniform float position : hint_range(-0.5, 0.5) = 0.0;
+uniform float size : hint_range(0.5, 2) = 0.5;
+uniform float angle : hint_range(0.0, 360.0) = 0.0;
+
+void fragment() {
+    float pivot = position + 0.5;
+    vec2 uv = UV - pivot;
+    float rotated = uv.x * cos(radians(angle)) - uv.y * sin(radians(angle)); 
+    float pos = smoothstep((1.0 - size) + position, size + 0.0001 + position, rotated + pivot);
+    COLOR = mix(first_color, second_color, pos); 
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = SubResource( 4 )
+shader_param/first_color = Color( 0.117647, 0.254902, 0.494118, 0.784314 )
+shader_param/second_color = Color( 0.949219, 0.906427, 0.626633, 0.705882 )
+shader_param/position = 0.0
+shader_param/size = 1.4
+shader_param/angle = 256.0
 
 [sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 2 )
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 10.0686, 9.75 )
+extents = Vector2( 10.0392, 9.75 )
 
 [sub_resource type="DynamicFont" id=3]
 font_data = ExtResource( 2 )
@@ -20,16 +47,23 @@ font_data = ExtResource( 2 )
 script = ExtResource( 1 )
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource( 8 )
 
-[node name="Background" type="Sprite" parent="ParallaxBackground"]
-position = Vector2( 512, 303 )
-scale = Vector2( 0.533333, 0.93808 )
+[node name="Skycolor" type="ColorRect" parent="ParallaxBackground"]
+material = SubResource( 5 )
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="Background" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1024, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Background"]
+position = Vector2( 512, 368 )
+scale = Vector2( 1, 0.8 )
 texture = ExtResource( 5 )
-region_enabled = true
-region_rect = Rect2( 0, 0, 1920, 646 )
 
 [node name="Clouds" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2( 500, 0 )
+motion_mirroring = Vector2( 512, 0 )
 
 [node name="Sprite" type="Sprite" parent="ParallaxBackground/Clouds"]
 position = Vector2( 184, 43 )
@@ -51,9 +85,21 @@ region_enabled = true
 region_rect = Rect2( 194, 6, 24, 16 )
 
 [node name="Floor" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2( 1200, 0 )
+motion_mirroring = Vector2( 1024, 0 )
 
 [node name="Sprite" type="Sprite" parent="ParallaxBackground/Floor"]
+position = Vector2( 512, 568 )
+scale = Vector2( 1, 1.01613 )
+texture = ExtResource( 4 )
+region_enabled = true
+region_rect = Rect2( 0, 514, 1024, 62 )
+
+[node name="Sun" type="Sprite" parent="ParallaxBackground"]
+position = Vector2( 96, 96 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 7 )
+region_enabled = true
+region_rect = Rect2( 70, 40, 120, 130 )
 
 [node name="ObstacleTimer" type="Timer" parent="."]
 wait_time = 2.5
@@ -71,22 +117,15 @@ wait_time = 0.1
 [node name="Floor" type="StaticBody2D" parent="."]
 
 [node name="Collision" type="CollisionShape2D" parent="Floor"]
-position = Vector2( 513, 602 )
+position = Vector2( 512, 568 )
 scale = Vector2( 51, 2 )
 shape = SubResource( 1 )
 
-[node name="Sprite" type="Sprite" parent="Floor"]
-position = Vector2( 514, 587 )
-scale = Vector2( 0.535, 1 )
-texture = ExtResource( 4 )
-region_enabled = true
-region_rect = Rect2( 0, 1038, 1920, 42 )
-
 [node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( 75, 553 )
+position = Vector2( 128, 520 )
 
 [node name="EnemySpawnPoint" type="Position2D" parent="."]
-position = Vector2( 1045, 540 )
+position = Vector2( 1048, 547 )
 
 [node name="GameOver" type="Label" parent="."]
 margin_left = 312.0
@@ -100,9 +139,9 @@ uppercase = true
 
 [node name="GameOver2" type="Label" parent="."]
 margin_left = 312.0
-margin_top = 300.0
+margin_top = 304.0
 margin_right = 712.0
-margin_bottom = 400.0
+margin_bottom = 404.0
 custom_fonts/font = SubResource( 3 )
 align = 1
 valign = 1
